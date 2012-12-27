@@ -10,7 +10,7 @@ $(document).ready(function() {
 			}
 		});
 	};
-	$('<a class="move" id="move" title="'+t('files_mv','Move')+'" href="#"><img class="svg" src="'+img+'" alt="Download"></a>').appendTo('#headerName .selectedActions');
+	$('<a class="move" id="move" title="'+t('files_mv','Move')+'" href="#"><img class="svg" src="'+img+'" alt="Download">'+t('files_mv','Move')+'</a>').appendTo('#headerName .selectedActions');
 
 	$('#move').click(function(event){
 		if($('#mvDrop').length>0){
