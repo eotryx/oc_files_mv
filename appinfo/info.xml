@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<info>
+	<id>files_mv</id>
+	<version>0.4.1</version>
+	<name>Files move</name>
+	<description>Move for the files interface</description>
+	<licence>GPL</licence>
+	<require>49</require>
+	<author>Martin Fiedler</author>
+	<types>
+		<filesystem/>
+	</types>
+	<default_enable/>
+</info>
