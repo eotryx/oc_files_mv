@@ -6,7 +6,7 @@ $(document).ready(function() {
 				$('#mvDrop').detach();
 			}
 			else{
-				mvCreateUI(true,file);
+				mvCreateUI(true,file,false);
 			}
 		});
 	};
@@ -14,18 +14,18 @@ $(document).ready(function() {
 
 	$('#move').click(function(event){
 		if($('#mvDrop').length>0){
-		$('#mvDrop').detach();
-		return;
+			$('#mvDrop').detach();
+			return;
 		}
 		//event.preventDefault();
 		event.stopPropagation();
 		var files = getSelectedFiles('name');
 		var file='';
 		for( var i=0;i<files.length;++i){
-		file += files[i]+';';
+			file += files[i]+';';
 		}
-		mvCreateUI(false,file);
-		});
+		mvCreateUI(false,file,false);
+	});
 	$(this).click(function(event){
 		if(!($(event.target).hasClass('mvUI')) && $(event.target).parents().index($('#mvDrop'))==-1){
 			$('#mvDrop').detach();
@@ -35,11 +35,12 @@ $(document).ready(function() {
 		var dest = $('#dirList').val();
 		var file = $('#dirFile').val();
 		var dir  = $('#dir').val();
+		var copy = $('#dirCopy').attr('checked')=='checked';
 		$.ajax({
 			type: 'POST',
 			url: OC.linkTo('files_mv','ajax/move.php'),
 			cache: false,
-			data: {dir: dir, src: file, dest: dest},
+			data: {dir: dir, src: file, dest: dest, copy: copy},
 			success: function(data){
 				if(data.status=="success"){
 				$.each(data.name,function(index,value){
@@ -52,8 +53,11 @@ $(document).ready(function() {
 		$('#mvDrop').detach();
 	});
 });
-function mvCreateUI(local,file){
+function mvCreateUI(local,file,copy){
 	var html = '<div id="mvDrop" class="mvUI">';
+	html += '<input type="checkbox" id="dirCopy"';
+	if(copy) html += ' checked';
+	html += '></input><label for="dirCopy">'+t('files_mv','Copy')+'</label><br>';
 	html += '<select data-placeholder="'+t('files_mv','Destination directory')+'" style="width:200px;" id="dirList" class="chzen-select">';
 	html += '<option value=""></option>';
 	html += '</select><input type="hidden" id="dirFile" value="'+file+'" />';

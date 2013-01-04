@@ -7,30 +7,42 @@ if(empty($_POST['src']) || empty($_POST['dest'])){
 	exit();
 }
 
-if(empty($_POST['dir'])) $_POST['dir'] = '';
-$dir   = $_POST['dir'];
-if($dir=='/') $dir = '';
-$file  = $_POST['src'];
-if(strpos($file,';')!==false){
-	$path1 = array();
-	$file = explode(';',$file);
-	array_pop($file); // empty element at the end
-}
-else{
-	$file = array($file);
-}
+/**
+ * create src and destination path
+ */
+	if(empty($_POST['dir'])) $_POST['dir'] = '';
+	$dir   = $_POST['dir'];
+	if($dir=='/') $dir = '';
+	$file  = $_POST['src'];
+	if(strpos($file,';')!==false){
+		$path1 = array();
+		$file  = explode(';',$file);
+		array_pop($file); // empty element at the end
+	}
+	else{
+		$file = array($file);
+	}
 
-$dir.='/';
-$path2 = $_POST['dest'].'/';
-if($dir=="//") $dir = "/";
-if($path2=="//") $path2="/";
+	$dir.='/';
+	$path2 = $_POST['dest'].'/';
+	if($dir=="//") $dir = "/";
+	if($path2=="//") $path2="/";
 
+/**
+ * move or copy the file to the destination
+ * default: move
+ */
 $error = 0;
+$copy = $_POST['copy']=='true';
 $files = array();
 foreach($file as $f){
-	if(OC_Filesystem::rename($dir.$f,$path2.$f)){
+	//
+	if($copy && OC_Filesystem::copy($dir.$f, $path2.$f)){
+		//copied, do not add to $files
+	}
+	else if(!$copy && OC_Filesystem::rename($dir.$f,$path2.$f)){
 		// here is the code when mv was successfull
-		$files[] = $f;
+	$files[] = $f;
 	}
 }
 $result = array('status'=>'success','action'=>'mv','name'=>$files);
