@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	var img = OC.imagePath('core','actions/play');
 	if (typeof FileActions !== 'undefined') {
-		FileActions.register('all', t('files_mv','Move'),OC.PERMISSION_UPDATE, function(){return OC.imagePath('core','actions/play')}, function(file) {
+		FileActions.register('all', t('files_mv','Move'),OC.PERMISSION_READ, function(){return OC.imagePath('core','actions/play')}, function(file) {
 			if (($('#mvDrop').length > 0)) {
 				$('#mvDrop').detach();
 			}
@@ -10,7 +10,9 @@ $(document).ready(function() {
 			}
 		});
 	};
-	$('<a class="move" id="move" title="'+t('files_mv','Move')+'" href="#"><img class="svg" src="'+img+'" alt="Download">'+t('files_mv','Move')+'</a>').appendTo('#headerName .selectedActions');
+	function button(file,copy){
+			}
+	$('<a class="move" id="move" href="#"><img class="svg" src="'+img+'" alt="'+t('files_mv','Move')+'">'+t('files_mv','Move')+'</a>').appendTo('#headerName .selectedActions');
 
 	$('#move').click(function(event){
 		if($('#mvDrop').length>0){
@@ -53,10 +55,19 @@ $(document).ready(function() {
 		$('#mvDrop').detach();
 	});
 });
-function mvCreateUI(local,file,copy){
+/**
+ * draw the move-dialog; if file is readonly, activate copy
+ *
+ * @local - true for single file, false for global use
+ * @file - filename in the local directory
+ */
+function mvCreateUI(local,file){
+	var permUpdate = (FileActions.getCurrentPermissions() & OC.PERMISSION_UPDATE )!=0;
+	var copy = ($('#dir').val().substring(0,7)=="/Shared"); //set copy as default when current directory is located in shared dir 
 	var html = '<div id="mvDrop" class="mvUI">';
 	html += '<input type="checkbox" id="dirCopy"';
-	if(copy) html += ' checked';
+	if(!permUpdate || copy) html += ' checked';
+	if(!permUpdate) html += ' disabled';
 	html += '></input><label for="dirCopy">'+t('files_mv','Copy')+'</label><br>';
 	html += '<select data-placeholder="'+t('files_mv','Destination directory')+'" style="width:200px;" id="dirList" class="chzen-select">';
 	html += '<option value=""></option>';

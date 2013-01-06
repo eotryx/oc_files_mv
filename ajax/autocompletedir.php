@@ -42,7 +42,7 @@ function getDirList($dir,$actFile){
 			if(preg_match($patternFile,$path)){
 				continue;
 			}
-			if($i['writable']){
+			if(!empty($i['writable']) && $i['writable']){
 				//$ret[] = array('name'=>$path,'r'=>$i['readable'],'w'=>$i['writeable']);
 				$ret[] =  '<option value="'.$path.'">'.$path.'</option>';
 			}
