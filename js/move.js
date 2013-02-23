@@ -1,4 +1,5 @@
 $(document).ready(function() {
+	if(/(public)\.php/i.exec(window.location.href)!=null) return; // escape when the requested file is public.php
 	var img = OC.imagePath('core','actions/play');
 	if (typeof FileActions !== 'undefined') {
 		FileActions.register('all', t('files_mv','Move'),OC.PERMISSION_READ, function(){return OC.imagePath('core','actions/play')}, function(file) {
@@ -62,7 +63,16 @@ $(document).ready(function() {
  * @file - filename in the local directory
  */
 function mvCreateUI(local,file){
-	var permUpdate = (FileActions.getCurrentPermissions() & OC.PERMISSION_UPDATE )!=0;
+	file2 = file.split(';');
+	var permUpdate = true;
+	for(var i=0;i<file2.length;++i){
+		if(file2[i]== "") continue;
+		var tmp = $('tr[data-file="'+file2[i]+'"]');
+		if((OC.PERMISSION_UPDATE&parseInt(tmp.attr('data-permissions')))==0){ // keine updaterechte
+			permUpdate=false;
+			break;
+		}
+	}
 	var copy = ($('#dir').val().substring(0,7)=="/Shared"); //set copy as default when current directory is located in shared dir 
 	var html = '<div id="mvDrop" class="mvUI">';
 	html += '<input type="checkbox" id="dirCopy"';

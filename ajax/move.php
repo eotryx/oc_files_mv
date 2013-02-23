@@ -28,6 +28,23 @@ if(empty($_POST['src']) || empty($_POST['dest'])){
 	if($dir=="//") $dir = "/";
 	if($path2=="//") $path2="/";
 
+function copyRec($src,$dest){
+	if(OC_Filesystem::is_dir($src)){ // copy dir
+		if($dh = OC_Filesystem::opendir($src)){
+			OC_Filesystem::mkdir($dest);
+			while(($file = readdir($dh)) !== false){
+				if(in_array($file,array('.','..'))) continue;
+				if(OC_Filesystem::is_dir($src.'/'.$file)) copyRec($src.'/'.$file,$dest.'/'.$file);
+				else OC_Filesystem::copy($src.'/'.$file, $dest.'/'.$file);
+			}
+		}
+	}
+	else{ // copy file
+		OC_Filesystem::copy($src, $dest);
+	}
+	return true;
+}
+
 /**
  * move or copy the file to the destination
  * default: move
@@ -36,8 +53,7 @@ $error = 0;
 $copy = $_POST['copy']=='true';
 $files = array();
 foreach($file as $f){
-	//
-	if($copy && OC_Filesystem::copy($dir.$f, $path2.$f)){
+	if($copy && copyRec($dir.$f,$path2.$f)){
 		//copied, do not add to $files
 	}
 	else if(!$copy && OC_Filesystem::rename($dir.$f,$path2.$f)){
