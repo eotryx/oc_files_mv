@@ -45,7 +45,7 @@ if(dirname($actFile[0])!=="/" && dirname($actFile[0])!==""){
 function getDirList($dir,$actFile,$depth=-1){
 	if($depth == 0) return array(); // Abbruch wenn depth = 0
 	$ret = array();
-	$patternFile = '!('.implode(')|(',$actFile).')!';
+	$patternFile = '!(('.implode(')|(',$actFile).'))$!';
 	foreach(OC_Files::getdirectorycontent( $dir ) as $i ){
 		if($i['type']=='dir'){
 			$path = $dir.'/'.$i['name'];
