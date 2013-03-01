@@ -1,6 +1,7 @@
 <?php 
 // Init owncloud
 OCP\JSON::checkLoggedIn();
+OCP\JSON::callCheck();
 
 if(empty($_POST['src']) || empty($_POST['dest'])){
 	OCP\JSON::error(array('data'=> array('message'=>'No data supplied.')));

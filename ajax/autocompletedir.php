@@ -2,6 +2,7 @@
 
 OCP\JSON::checkLoggedIn();
 OCP\JSON::checkAppEnabled('files_mv');
+OCP\JSON::callCheck();
 
 $showLayers = (!empty($_GET['layers']))?$_GET['layers']:-1;
 $dirs = array();
