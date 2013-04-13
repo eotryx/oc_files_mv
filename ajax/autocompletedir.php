@@ -53,11 +53,10 @@ function getDirList($dir,$actFile,$depth=-1){
 			if(preg_match($patternFile,$path)){
 				continue;
 			}
-			if(!empty($i['writable']) && $i['writable']){
+			if(!empty($i['permissions']) && $i['permissions']&OCP\PERMISSION_UPDATE!=0){
 				//$ret[] = array('name'=>$path,'r'=>$i['readable'],'w'=>$i['writeable']);
 				$ret[] =  '<option value="'.$path.'">'.$path.'</option>';
 			}
-			;
 			$ret = array_merge($ret,getDirList($path,$actFile,$depth-1));
 		}
 	}
@@ -66,7 +65,8 @@ function getDirList($dir,$actFile,$depth=-1){
 
 $patternFile = '!('.implode(')|(',$actFile).')!';
 if($actualDir!="/" && !preg_match($patternFile,$actualDir)) $dirs[] = '<option value="'.$actualDir.'">'.$actualDir.'</option>';
-$dirs = array_merge($dirs,getDirList($actualDir,$actFile,$showLayers));
+$tmp = getDirList($actualDir,$actFile,$showLayers);
+$dirs = array_merge($dirs,$tmp);
 
 $dirs[] = '</optgroup>';
 OCP\JSON::encodedPrint($dirs);
