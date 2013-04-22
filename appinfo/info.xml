@@ -4,7 +4,7 @@
 	<name>Files move</name>
 	<description>Move for the files interface</description>
 	<licence>GPL</licence>
-	<version>0.5.2a</version>
+	<version>0.5.2</version>
 	<require>4.93</require>
 	<author>Martin Fiedler</author>
 	<types>
