@@ -30,11 +30,12 @@ $(document).ready(function() {
 		mvCreateUI(false,file,false);
 	});
 	$(this).click(function(event){
-		if(!($(event.target).hasClass('mvUI')) && $(event.target).parents().index($('#mvDrop'))==-1){
+		if(!$(event.target.hasClass('ui-menu')) || (!($(event.target).hasClass('mvUI')) && $(event.target).parents().index($('#mvDrop'))==-1)){
 			$('#mvDrop').detach();
 		}
 	});
-	$('#dirList').live('change',function(){
+	//TODO: nach test wieder aktivieren
+	$('#mvForm').live('submit',function(){
 		var dest = $('#dirList').val();
 		var file = $('#dirFile').val();
 		var dir  = $('#dir').val();
@@ -53,7 +54,9 @@ $(document).ready(function() {
 				}
 			}
 		});
+		$('#dirList').autocomplete("close");
 		$('#mvDrop').detach();
+		return false;
 	});
 });
 /**
@@ -75,14 +78,15 @@ function mvCreateUI(local,file){
 	}
 	var copy = ($('#dir').val().substring(0,7)=="/Shared"); //set copy as default when current directory is located in shared dir 
 	var html = '<div id="mvDrop" class="mvUI">';
-	html += '<input type="checkbox" id="dirCopy"';
+	html += '<form action="#" id="mvForm"><input type="checkbox" id="dirCopy"';
 	if(!permUpdate || copy) html += ' checked';
 	if(!permUpdate) html += ' disabled';
 	html += '></input><label for="dirCopy">'+t('files_mv','Copy')+'</label><br>';
-	html += '<select data-placeholder="'+t('files_mv','Destination directory')+'" style="width:200px;" id="dirList" class="chzen-select">';
-	html += '<option value=""></option>';
-	html += '</select><input type="hidden" id="dirFile" value="'+file+'" />';
-	html += '<strong id="mvWarning"></strong>';
+
+	html += '<input id="dirList" data-placeholder="'+t('files_mv','Destination directory')+'"><br>';
+	html += '<input type="hidden" id="dirFile" value="'+file+'" />';
+	html += '<input type="submit" id="dirListSend" value="'+t('files_mv','Move')+'" />';
+	html += '<strong id="mvWarning"></strong></form>';
 	html += '</div>';
 	if(local){
 		$(html).appendTo($('tr').filterAttr('data-file',file).find('td.filename'));
@@ -90,14 +94,17 @@ function mvCreateUI(local,file){
 	else{
 		$(html).addClass('mv').appendTo('#headerName .selectedActions');
 	}
-	$.getJSON(OC.linkTo('files_mv', 'ajax/autocompletedir.php'), {file: $('#dir').val()+'/'+file}, function(dir){
-		var actDir = $('#dir').val();
-		if(dir){
-			$.each(dir, function(index, row){
-				if($(row).val()!=actDir) $(row).appendTo('#dirList');
-			});
-			$('#dirList').trigger('liszt:updated');
-		}
+	$('#dirList').autocomplete({
+		minLength:-1,
+		source: function(request, response) {
+			$.getJSON(
+				OC.linkTo('files_mv', 'ajax/autocompletedir.php'),
+				{
+					file: $('#dir').val()+'/'+file,
+					StartDir: $('#dirList').val()
+				},
+				function(dir){ response(dir); }
+			);
+		}, 
 	});
-	$('#dirList').chosen();
 }

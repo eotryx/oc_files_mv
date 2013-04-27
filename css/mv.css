@@ -19,3 +19,7 @@
 	top:1em;
 }
 #mvDrop label{ font-weight:normal; }
+#mvForm {
+	margin: 0;
+	padding: 0;
+}
