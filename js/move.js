@@ -30,11 +30,11 @@ $(document).ready(function() {
 		mvCreateUI(false,file,false);
 	});
 	$(this).click(function(event){
-		if(!$(event.target.hasClass('ui-menu')) || (!($(event.target).hasClass('mvUI')) && $(event.target).parents().index($('#mvDrop'))==-1)){
+		if( (!($(event.target).hasClass('ui-corner-all')) && $(event.target).parents().index($('.ui-menu'))==-1) &&
+			(!($(event.target).hasClass('mvUI')) && $(event.target).parents().index($('#mvDrop'))==-1)){
 			$('#mvDrop').detach();
 		}
 	});
-	//TODO: nach test wieder aktivieren
 	$('#mvForm').live('submit',function(){
 		var dest = $('#dirList').val();
 		var file = $('#dirFile').val();
@@ -94,8 +94,9 @@ function mvCreateUI(local,file){
 	else{
 		$(html).addClass('mv').appendTo('#headerName .selectedActions');
 	}
+	$('#dirList').focus();
 	$('#dirList').autocomplete({
-		minLength:-1,
+		minLength:0,
 		source: function(request, response) {
 			$.getJSON(
 				OC.linkTo('files_mv', 'ajax/autocompletedir.php'),
@@ -107,4 +108,5 @@ function mvCreateUI(local,file){
 			);
 		}, 
 	});
+	$('#dirList').autocomplete("search",""); // show the autocomplete-names
 }
