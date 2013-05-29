@@ -9,5 +9,6 @@
 	<types>
 		<filesystem/>
 	</types>
+	<version>0.6.0</version>
 	<default_enable/>
 </info>
