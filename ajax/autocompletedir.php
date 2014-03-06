@@ -1,5 +1,4 @@
 <?php
-
 OCP\JSON::checkLoggedIn();
 OCP\JSON::checkAppEnabled('files_mv');
 OCP\JSON::callCheck();
