@@ -45,12 +45,18 @@ $(document).ready(function() {
 			cache: false,
 			data: {dir: dir, src: file, dest: dest, copy: copy},
 			success: function(data){
-				if(data.status=="success"){
+				//remove each moved file
 				$.each(data.name,function(index,value){
 					FileList.remove(value);
 					procesSelection();
 					});
+				// show error messages when caught some
+				if(data.status=="error"){
+					$('#notification').hide();
+					$('#notification').text(data.message);
+					$('#notification').fadeIn();
 				}
+		console.log(data)
 			}
 		});
 		$('#dirList').autocomplete("close");
@@ -97,7 +103,9 @@ function mvCreateUI(local,file){
 	else{
 		$(html).addClass('mv').appendTo('#headerName .selectedActions');
 	}
-	$('#dirList').focus();
+	$('#dirList').focus(function(){
+		$('#dirList').autocomplete("search","")
+	});
 	// get autocompletion names
 	$('#dirList').autocomplete({minLength:0, 
 		source: function(request, response) {
@@ -114,5 +122,6 @@ function mvCreateUI(local,file){
 			);
 		}, 
 	});
+	$('#dirList').focus();
 
 }

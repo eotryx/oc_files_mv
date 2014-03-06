@@ -53,15 +53,32 @@ function copyRec($src,$dest){
 $error = 0;
 $copy = $_POST['copy']=='true';
 $files = array();
+
+$l = OC_L10N::get('files'); // error messages from the files-app
+
+$err = array();
 foreach($file as $f){
-	if($copy && copyRec($dir.$f,$path2.$f)){
+	$target = $path2.$f;
+	$source = $dir.$f;
+	if(\OC\Files\Filesystem::file_exists($target)){
+		$err['exists'][] = $f;
+	}
+	else if($copy && copyRec($source,$target)){
 		//copied, do not add to $files
 	}
-	else if(!$copy && OC_Filesystem::rename($dir.$f,$path2.$f)){
+	else if(!$copy && OC_Filesystem::rename($source,$target)){
 		// here is the code when mv was successfull
-	$files[] = $f;
+		$files[] = $f;
+	}
+	else{
+		$err['failed'][] = $f;
 	}
 }
-$result = array('status'=>'success','action'=>'mv','name'=>$files);
+$msg =array();
+if(!empty($err['exists'])) $msg[] = $l->t("Could not move %s - File with this name already exists", array(implode(", ",$err['exists'])));
+if(!empty($err['failed'])) $msg[] = $l->t("Could not move %s", array(implode(", ",$err['failed'])));
+$msg = implode("<br>\n",$msg);
+$status = (empty($msg)?'success':'error');
+$result = array('status'=>$status,'action'=>'mv','name'=>$files,'message'=>$msg);
 OCP\JSON::encodedPrint($result);
 
