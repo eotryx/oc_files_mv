@@ -11,6 +11,7 @@ OCP\JSON::callCheck();
 * shall return all subdirs within (layer) layers
 */
 
+$l = OC_L10N::get('files_mv');
 $showLayers = (!empty($_GET['layers']))?$_GET['layers']:2;
 $dirs = array();
 if(!empty($_GET['StartDir'])){
