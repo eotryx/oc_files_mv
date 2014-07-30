@@ -1,7 +1,7 @@
 <?php
-OCP\JSON::checkLoggedIn();
-OCP\JSON::checkAppEnabled('files_mv');
-OCP\JSON::callCheck();
+\OCP\JSON::checkLoggedIn();
+\OCP\JSON::checkAppEnabled('files_mv');
+\OCP\JSON::callCheck();
 /*
 * parameters:
 * *layers
@@ -11,7 +11,7 @@ OCP\JSON::callCheck();
 * shall return all subdirs within (layer) layers
 */
 
-$l = OC_L10N::get('files_mv');
+$l = \OC_L10N::get('files_mv');
 $showLayers = (!empty($_GET['layers']))?$_GET['layers']:2;
 $dirs = array();
 if(!empty($_GET['StartDir'])){
@@ -44,8 +44,8 @@ for($i=0;$i<$len;++$i){
 	}
 }
 
-if(!OC_Filesystem::is_dir($actualDir)){
-	OCP\JSON::error(array('data'=>array('message'=>$l->t('No filesystem found'))));
+if(!\OC\Files\Filesystem::is_dir($actualDir)){
+	\OCP\JSON::error(array('data'=>array('message'=>$l->t('No filesystem found'))));
 }
 if(dirname($actFile[0])!=="/" && dirname($actFile[0])!==""){
 	$dirs[] = '/';
@@ -54,14 +54,14 @@ function getDirList($dir,$actFile,$depth=-1){
 	if($depth == 0) return array(); // Abbruch wenn depth = 0
 	$ret = array();
 	$patternFile = '!(('.implode(')|(',$actFile).'))$!';
-	foreach(OC_Files::getdirectorycontent( $dir ) as $i ){
+	foreach(\OC\Files\Filesystem::getDirectoryContent( $dir ) as $i ){
 		if($i['type']=='dir'){
 			if(substr($dir,-1)=='/')$dir = substr($dir,0,-1);
 			$path = $dir.'/'.$i['name'];
 			if(preg_match($patternFile,$path)){
 				continue;
 			}
-			if(!empty($i['permissions']) && $i['permissions']&OCP\PERMISSION_UPDATE!=0){
+			if(!empty($i['permissions']) && $i['permissions']&\OCP\PERMISSION_UPDATE!=0){
 				$ret[] =  $path;
 			}
 			$ret = array_merge($ret,getDirList($path,$actFile,$depth-1));
@@ -75,4 +75,4 @@ if($actualDir!="/" && !preg_match($patternFile,$actualDir)) $dirs[] = $actualDir
 $tmp = getDirList($actualDir,$actFile,$showLayers);
 $dirs = array_merge($dirs,$tmp);
 
-OCP\JSON::encodedPrint($dirs);
+\OCP\JSON::encodedPrint($dirs);

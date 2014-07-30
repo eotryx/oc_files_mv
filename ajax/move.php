@@ -30,18 +30,18 @@ if(empty($_POST['src']) || empty($_POST['dest'])){
 	if($path2=="//") $path2="/";
 
 function copyRec($src,$dest){
-	if(OC_Filesystem::is_dir($src)){ // copy dir
-		if($dh = OC_Filesystem::opendir($src)){
-			OC_Filesystem::mkdir($dest);
+	if(\OC\Files\Filesystem::is_dir($src)){ // copy dir
+		if($dh = \OC\Files\Filesystem::opendir($src)){
+			\OC\Files\Filesystem::mkdir($dest);
 			while(($file = readdir($dh)) !== false){
 				if(in_array($file,array('.','..'))) continue;
-				if(OC_Filesystem::is_dir($src.'/'.$file)) copyRec($src.'/'.$file,$dest.'/'.$file);
-				else OC_Filesystem::copy($src.'/'.$file, $dest.'/'.$file);
+				if(\OC\Files\Filesystem::is_dir($src.'/'.$file)) copyRec($src.'/'.$file,$dest.'/'.$file);
+				else \OC\Files\Filesystem::copy($src.'/'.$file, $dest.'/'.$file);
 			}
 		}
 	}
 	else{ // copy file
-		OC_Filesystem::copy($src, $dest);
+		\OC\Files\Filesystem::copy($src, $dest);
 	}
 	return true;
 }
@@ -54,7 +54,7 @@ $error = 0;
 $copy = $_POST['copy']=='true';
 $files = array();
 
-$l = OC_L10N::get('files'); // error messages from the files-app
+$l = \OC_L10N::get('files'); // error messages from the files-app
 
 $err = array();
 foreach($file as $f){
@@ -66,7 +66,7 @@ foreach($file as $f){
 	else if($copy && copyRec($source,$target)){
 		//copied, do not add to $files
 	}
-	else if(!$copy && OC_Filesystem::rename($source,$target)){
+	else if(!$copy && \OC\Files\Filesystem::rename($source,$target)){
 		// here is the code when mv was successfull
 		$files[] = $f;
 	}
@@ -80,5 +80,5 @@ if(!empty($err['failed'])) $msg[] = $l->t("Could not move %s", array(implode(", 
 $msg = implode("<br>\n",$msg);
 $status = (empty($msg)?'success':'error');
 $result = array('status'=>$status,'action'=>'mv','name'=>$files,'message'=>$msg);
-OCP\JSON::encodedPrint($result);
+\OCP\JSON::encodedPrint($result);
 
