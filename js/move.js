@@ -1,3 +1,19 @@
+var keks = function(event){
+		// move multiple files
+		event.stopPropagation();
+		if($('#mvDrop').length>0){
+			$('#mvDrop').detach();
+			return;
+		}
+		var files = FileList.getSelectedFiles();
+		var file='';
+		for( var i=0;i<files.length;++i){
+			file += (files[i].name)+';';
+		}
+		mvCreateUI(false,file,false);
+		return false;
+	};
+
 $(document).ready(function() {
 	if(/(public)\.php/i.exec(window.location.href)!=null) return; // escape when the requested file is public.php
 	var img = OC.imagePath('core','actions/play');
@@ -11,23 +27,12 @@ $(document).ready(function() {
 			}
 		});
 	};
-	$('<a class="move" id="move" href="#"><img class="svg" src="'+img+'" alt="'+t('files_mv','Move')+'">'+t('files_mv','Move')+'</a>').appendTo('#headerName .selectedActions');
+	var el = $('#headerName .selectedActions');
+	$('<a class="move" id="move" href=""><img class="svg" src="'+img+'" alt="'+t('files_mv','Move')+'">'+t('files_mv','Move')+'</a>').appendTo(el);
+	el.find('.move').click(keks)
+	//alert(Filelist.$el)
 
-	$('#move').click(function(event){
-		// move multiple files
-		if($('#mvDrop').length>0){
-			$('#mvDrop').detach();
-			return;
-		}
-		event.stopPropagation();
-		var files = getSelectedFilesTrash('name');
-		var file='';
-		for( var i=0;i<files.length;++i){
-			file += files[i]+';';
-		}
-		mvCreateUI(false,file,false);
-	});
-
+	
 	$(this).click(function(event){
 		if( (!($(event.target).hasClass('ui-corner-all')) && $(event.target).parents().index($('.ui-menu'))==-1) &&
 			(!($(event.target).hasClass('mvUI')) && $(event.target).parents().index($('#mvDrop'))==-1)){
