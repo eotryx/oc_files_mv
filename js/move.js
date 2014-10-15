@@ -51,9 +51,11 @@ $(document).ready(function() {
 			data: {dir: dir, src: file, dest: dest, copy: copy},
 			success: function(data){
 				//remove each moved file
+				console.log(data.name, data);
 				$.each(data.name,function(index,value){
+					console.log("each",index,value)
 					FileList.remove(value);
-					procesSelection();
+					//procesSelection();
 					});
 				// show error messages when caught some
 				if(data.status=="error"){
