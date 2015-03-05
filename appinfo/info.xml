@@ -1,14 +1,17 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0"?>
 <info>
-	<id>files_mv</id>
-	<name>Files move</name>
-	<description>Move for the files interface</description>
-	<licence>GPL</licence>
-	<require>4.93</require>
-	<author>Martin Fiedler</author>
+    <id>files_mv</id>
+    <name>Files Move</name>
+    <description>Move functionality within the files interface</description>
+    <licence>GPL</licence>
+    <author>eotryx</author>
+    <version>0.7.3</version>
+    <namespace>Files_Mv</namespace>
+    <category>other</category>
+    <dependencies>
+        <owncloud min-version="8" />
+    </dependencies>
 	<types>
 		<filesystem/>
 	</types>
-	<version>0.7.2</version>
-	<default_enable/>
 </info>

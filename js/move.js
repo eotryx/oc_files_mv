@@ -46,9 +46,9 @@ $(document).ready(function() {
 		var copy = $('#dirCopy').attr('checked')=='checked';
 		$.ajax({
 			type: 'POST',
-			url: OC.linkTo('files_mv','ajax/move.php'),
+			url: OC.generateUrl('/apps/files_mv/move'),
 			cache: false,
-			data: {dir: dir, src: file, dest: dest, copy: copy},
+			data: {srcDir: dir, srcFile: file, dest: dest, copy: copy},
 			success: function(data){
 				//remove each moved file
 				console.log(data.name, data);
@@ -116,8 +116,8 @@ function mvCreateUI(local,file){
 	// get autocompletion names
 	$('#dirList').autocomplete({minLength:0, 
 		source: function(request, response) {
-			$.getJSON(
-				OC.filePath('files_mv','ajax', 'autocompletedir.php'),
+			$.post(
+				OC.generateUrl('/apps/files_mv/complete'),
 				{
 					file: $('#dir').val()+'/'+file,
 					StartDir: $('#dirList').val(), // using current input to allow access to more than n levels depth
@@ -125,7 +125,8 @@ function mvCreateUI(local,file){
 				function(dir){
 					$('#dirList').autocomplete('option','autoFocus', true)
 					response(dir)
-				}
+				},
+				'json'
 			);
 		}, 
 	});
