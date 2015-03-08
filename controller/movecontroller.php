@@ -17,6 +17,14 @@ use \OCP\AppFramework\Http\DataResponse;
 use \OCP\AppFramework\Controller;
 use \OCP\IServerContainer;
 
+/**
+ * Mockup Translation object, until I find out how the translation works.
+ */
+class Translate {
+	public function t($msg){
+		return $msg;
+	}
+}
 class MoveController extends Controller {
 	private $userId;
 	private $l;
@@ -27,7 +35,8 @@ class MoveController extends Controller {
 		parent::__construct($AppName, $request);
 		$this->userId = $UserId;
 		$this->storage = $ServerContainer->getUserFolder($UserId);
-		$this->l = \OC_L10N::get($AppName);
+		//$this->l = \OC_L10N::get($AppName);
+		$this->l = new Translate(); // TODO: clean this mockup and implement it right
 		$this->lF = \OC_L10N::get('files');
 	}
 	/**
@@ -47,30 +56,46 @@ class MoveController extends Controller {
 		if(!is_array($files)) $files = array($files);
 		$files = array_filter($files); // remove empty elements
 
-		$srcDir  .='/';
-		$dest .='/';
-		if($srcDir=='//') $srcDir = '/';
-		if($dest=='//') $dest = '/';
+		$srcDir = \OC\Files\Filesystem::normalizePath($srcDir).'/';
+		$dest   = \OC\Files\Filesystem::normalizePath($dest).'/';
 		if($srcDir==$dest) return array("status"=>"error","message"=>$this->l->t('Src and Dest are not allowed to be the same location!'));
 
 		$error = 0;
 		$err = array();
-		$ttt = array();
+		$filesMoved = array();
+		$msg =array();
 		foreach($files as $file){
-			$to = $dest.$file;
-			$fromPath = $srcDir.$file;
-			$from = $this->storage->get($fromPath);
-			var_dump($to, $fromPath);
-			if($this->storage->nodeExists($to)){
+			$toPath = ($dest.$file);
+			$fromPath = ($srcDir.$file);
+			// API: folder-obj->move/copy($to) not working
+			//$from = $this->storage->get($fromPath);
+			if($this->storage->nodeExists($toPath)){
 				$err['exists'][] = $file;
 			}
 			else{
-				$ttt[]=$from;
-				if($copy){
-					$ttt[] = $from->copy($to);
+				try{
+					if($copy){
+						// when copying files, DO NOT ADD to $filesMoved, as the gui removes them then from the view
+						$this->copyRec($fromPath, $toPath);
+						//$from->copy($to);
+					}
+					else{
+						if(\OC\Files\Filesystem::rename($fromPath, $toPath)){
+							$filesMoved[] = $file;
+						}
+						else{
+							$err['failed'][] = $file;
+						}
+						//$from->move($to);
+					}
 				}
-				else{
-					$ttt[] = $from->move($to);
+/*
+				catch(\OCP\Files\NotPermittedException $e){
+					//TODO: not allowed by permission
+				}
+*/
+				catch(\Exception $e){
+					$msg[] = $file.": ".$e->getMessage();
 				}
 			}
 				/*
@@ -88,26 +113,28 @@ class MoveController extends Controller {
 				 */
 
 		}
-		var_dump($ttt);
-		$msg =array();
 		if(!empty($err['exists'])) $msg[] = $this->lF->t("Could not move %s - File with this name already exists", array(implode(", ",$err['exists'])));
 		if(!empty($err['failed'])) $msg[] = $this->lF->t("Could not move %s", array(implode(", ",$err['failed'])));
 		$msg = implode("<br>\n",$msg);
 		$status = (empty($msg)?'success':'error');
-		$result = array('status'=>$status,'action'=>'mv','name'=>$files,'message'=>$msg);
+		$result = array('status'=>$status,'action'=>'mv','name'=>$filesMoved,'message'=>$msg);
 		return $result;
 
 	}
 
 
-	/*
+	/**
+	 * copy object recursively, $src can be either file or folder, it doesn't matter
+	 * @param string $src - sourcefile
+	 * @param string $dest - destination file
+	 */
 	private function copyRec($src,$dest){
 		if(\OC\Files\Filesystem::is_dir($src)){ // copy dir
 			if($dh = \OC\Files\Filesystem::opendir($src)){
 				\OC\Files\Filesystem::mkdir($dest);
 				while(($file = readdir($dh)) !== false){
-					if(in_array($file,array('.','..'))) continue;
-					if(\OC\Files\Filesystem::is_dir($src.'/'.$file)) copyRec($src.'/'.$file,$dest.'/'.$file);
+					if(in_array($file,array('.','..'))) continue; // skip links to self or upper folder
+					if(\OC\Files\Filesystem::is_dir($src.'/'.$file)) $this->copyRec($src.'/'.$file,$dest.'/'.$file);
 					else \OC\Files\Filesystem::copy($src.'/'.$file, $dest.'/'.$file);
 				}
 			}
@@ -117,6 +144,5 @@ class MoveController extends Controller {
 		}
 		return true;
 	}
-	 */
 }
 

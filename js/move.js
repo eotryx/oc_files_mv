@@ -59,11 +59,9 @@ $(document).ready(function() {
 					});
 				// show error messages when caught some
 				if(data.status=="error"){
-					$('#notification').hide();
-					$('#notification').text(data.message);
-					$('#notification').fadeIn();
+					OC.Notification.showTemporary(data.message);
 				}
-		console.log(data)
+				console.log(data)
 			}
 		});
 		$('#dirList').autocomplete("close");

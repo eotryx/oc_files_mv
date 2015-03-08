@@ -97,6 +97,7 @@ class CompleteController extends Controller {
 		$ret = array();
 		$patternFile = '!(('.implode(')|(',$actFile).'))$!';
 		$folder = $this->storage->get($dir)->getDirectoryListing();
+		$actFileDir = dirname($actFile[0]); // ignore exactly this path
 		foreach($folder as $i ){
 			// ignore files other than directories
 			if($i->getType()!==\OCP\Files\FileInfo::TYPE_FOLDER) continue;
@@ -107,7 +108,8 @@ class CompleteController extends Controller {
 			// ignore directories that are within the files to be moved
 			if(preg_match($patternFile,$path)) continue;
 
-			if($i->isUpdateable()){
+			// only list paths, that are writable and are not the files own directory
+			if($i->isUpdateable() && $path != $actFileDir){
 				$ret[] =  $path;
 			}
 			//recursion for all sub directories
