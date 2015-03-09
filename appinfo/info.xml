@@ -8,7 +8,7 @@
     <version>0.7.3</version>
     <namespace>Files_Mv</namespace>
     <category>productivity</category>
-	<repository>https://github.com/eotryx/oc_files_mv/</repository
+	<repository>https://github.com/eotryx/oc_files_mv/</repository>
     <dependencies>
         <owncloud min-version="8" />
     </dependencies>

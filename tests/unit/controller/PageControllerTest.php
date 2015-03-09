@@ -28,26 +28,9 @@ class CompleteControllerTest extends \Test\TestCase {
 
 	public function setUp() {
 		parent::setUp();
-		/**
-		 * don't ask me, ask the guy developing files/tests/ajax_rename.php
-		 */
-		$this->originalStorage = \OC\Files\Filesystem::getStorage('/');
 
-		// mock OC_L10n
-		if (!self::$user) {
-			self::$user = uniqid();
-		}
-		\OC_User::createUser(self::$user, 'password');
-		\OC_User::setUserId(self::$user);
-
-		\OC\Files\Filesystem::init(self::$user, '/' . self::$user . '/files');
-
-	
 		$request = $this->getMockBuilder('OCP\IRequest')->getMock();
 
-		$this->controller = new PageController(
-			'filesmv', $request, $this->userId
-		);
 	}
 
 
