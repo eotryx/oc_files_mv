@@ -1,0 +1,9 @@
+[main]
+host = https://www.transifex.com
+lang_map = ja_JP: ja
+
+[owncloud.oc_files_mv]
+file_filter = <lang>/oc_files_mv.po
+source_file = templates/oc_files_mv.pot
+source_lang = en
+type = PO
