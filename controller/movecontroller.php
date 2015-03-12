@@ -30,13 +30,13 @@ class MoveController extends Controller {
 	}
 	/**
 	 * move/copy $file from $srcDir to $dest
-	 * @param bool $copy - true=copy, false=move
 	 * @param string $srcDir
 	 * @param string $file - semicolon separated filenames
 	 * @param string $dest - destination Directory
+	 * @param bool $copy - true=copy, false=move
 	 * @NoAdminRequired
 	 */
-	public function index($srcDir, $srcFile, $dest, $copy){
+	public function index($srcDir, $srcFile, $dest, $copy=false){
 		if(empty($srcFile) || empty($dest)){
 			return array("status"=>"error","message"=>$this->l->t('No data supplied.'));
 		}
@@ -46,6 +46,7 @@ class MoveController extends Controller {
 		if(!is_array($files)) $files = array($files);
 		$files = array_filter($files); // remove empty elements
 
+		//TODO: use OCP instead of OC
 		$srcDir = \OC\Files\Filesystem::normalizePath($srcDir).'/';
 		$dest   = \OC\Files\Filesystem::normalizePath($dest).'/';
 		if($srcDir==$dest){
@@ -81,39 +82,19 @@ class MoveController extends Controller {
 							$err['failed'][] = $file;
 						}
 						 */
-						try{
-							$from->move($to);
-							$filesMoved[] = $file;
-						}
-						catch(\OCP\Files\NotPermittedException $e){
-							$err['failed'] = $file;
-							$msg[] = $e->getMessage();
-						}
+						$from->move($to);
+						$filesMoved[] = $file;
+						
 					}
 				}
-/*
 				catch(\OCP\Files\NotPermittedException $e){
-					//TODO: not allowed by permission
+					$err['failed'] = $file;
+					$msg[] = $e->getMessage();
 				}
-*/
 				catch(\Exception $e){
 					$msg[] = $file.": ".$e->getMessage();
 				}
 			}
-				/*
-			   
-				if($copy && copyRec($source,$target)){
-				//copied, do not add to $files
-			}
-			else if(!$copy && $this->storage($source,$target)){
-				// here is the code when mv was successfull
-				$files[] = $f;
-			}
-			else{
-				$err['failed'][] = $f;
-			}
-				 */
-
 		}
 		if(!empty($err['exists'])){
 		   	$msg[] = $this->l->t("Could not move %s - File with this name already exists", array(implode(", ",$err['exists'])));
