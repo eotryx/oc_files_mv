@@ -16,28 +16,17 @@ use \OCP\AppFramework\Http\TemplateResponse;
 use \OCP\AppFramework\Http\DataResponse;
 use \OCP\AppFramework\Controller;
 use \OCP\IServerContainer;
+use \OCP\IL10N;
 
-/**
- * Mockup Translation object, until I find out how the translation works.
- */
-class Translate {
-	public function t($msg){
-		return $msg;
-	}
-}
 class MoveController extends Controller {
-	private $userId;
+	//private $userId;
 	private $l;
-	private $lF; // $l of app files
 	private $storage;
 
-	public function __construct($AppName, IRequest $request, $ServerContainer, $UserId){
+	public function __construct($AppName, IRequest $request, IL10N $l, $UserFolder){
 		parent::__construct($AppName, $request);
-		$this->userId = $UserId;
-		$this->storage = $ServerContainer->getUserFolder($UserId);
-		//$this->l = \OC_L10N::get($AppName);
-		$this->l = new Translate(); // TODO: clean this mockup and implement it right
-		$this->lF = \OC_L10N::get('files');
+		$this->storage = $UserFolder;
+		$this->l = $l;
 	}
 	/**
 	 * move/copy $file from $srcDir to $dest
@@ -48,8 +37,9 @@ class MoveController extends Controller {
 	 * @NoAdminRequired
 	 */
 	public function index($srcDir, $srcFile, $dest, $copy){
-		if(empty($srcFile) || empty($dest))
+		if(empty($srcFile) || empty($dest)){
 			return array("status"=>"error","message"=>$this->l->t('No data supplied.'));
+		}
 
 		// prepare file names
 		$files = explode(';', $srcFile);
@@ -58,7 +48,9 @@ class MoveController extends Controller {
 
 		$srcDir = \OC\Files\Filesystem::normalizePath($srcDir).'/';
 		$dest   = \OC\Files\Filesystem::normalizePath($dest).'/';
-		if($srcDir==$dest) return array("status"=>"error","message"=>$this->l->t('Src and Dest are not allowed to be the same location!'));
+		if($srcDir==$dest){
+		   	return array("status"=>"error","message"=>$this->l->t('Src and Dest are not allowed to be the same location!'));
+		}
 
 		$error = 0;
 		$err = array();
@@ -68,7 +60,8 @@ class MoveController extends Controller {
 			$toPath = ($dest.$file);
 			$fromPath = ($srcDir.$file);
 			// API: folder-obj->move/copy($to) not working
-			//$from = $this->storage->get($fromPath);
+			$from = $this->storage->get($fromPath);
+			$to = $this->storage->getFullPath($toPath);
 			if($this->storage->nodeExists($toPath)){
 				$err['exists'][] = $file;
 			}
@@ -76,17 +69,26 @@ class MoveController extends Controller {
 				try{
 					if($copy){
 						// when copying files, DO NOT ADD to $filesMoved, as the gui removes them then from the view
-						$this->copyRec($fromPath, $toPath);
-						//$from->copy($to);
+						//$this->copyRec($fromPath, $toPath);
+						$from->copy($to);
 					}
 					else{
+						/*
 						if(\OC\Files\Filesystem::rename($fromPath, $toPath)){
 							$filesMoved[] = $file;
 						}
 						else{
 							$err['failed'][] = $file;
 						}
-						//$from->move($to);
+						 */
+						try{
+							$from->move($to);
+							$filesMoved[] = $file;
+						}
+						catch(\OCP\Files\NotPermittedException $e){
+							$err['failed'] = $file;
+							$msg[] = $e->getMessage();
+						}
 					}
 				}
 /*
@@ -113,8 +115,12 @@ class MoveController extends Controller {
 				 */
 
 		}
-		if(!empty($err['exists'])) $msg[] = $this->lF->t("Could not move %s - File with this name already exists", array(implode(", ",$err['exists'])));
-		if(!empty($err['failed'])) $msg[] = $this->lF->t("Could not move %s", array(implode(", ",$err['failed'])));
+		if(!empty($err['exists'])){
+		   	$msg[] = $this->l->t("Could not move %s - File with this name already exists", array(implode(", ",$err['exists'])));
+		}
+		if(!empty($err['failed'])){
+		   	$msg[] = $this->l->t("Could not move %s", array(implode(", ",$err['failed'])));
+		}
 		$msg = implode("<br>\n",$msg);
 		$status = (empty($msg)?'success':'error');
 		$result = array('status'=>$status,'action'=>'mv','name'=>$filesMoved,'message'=>$msg);
@@ -127,7 +133,9 @@ class MoveController extends Controller {
 	 * copy object recursively, $src can be either file or folder, it doesn't matter
 	 * @param string $src - sourcefile
 	 * @param string $dest - destination file
+	 * @deprecated supported natively now by OC8
 	 */
+	/*
 	private function copyRec($src,$dest){
 		if(\OC\Files\Filesystem::is_dir($src)){ // copy dir
 			if($dh = \OC\Files\Filesystem::opendir($src)){
@@ -144,5 +152,6 @@ class MoveController extends Controller {
 		}
 		return true;
 	}
+*/
 }
 

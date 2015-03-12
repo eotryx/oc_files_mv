@@ -16,18 +16,17 @@ use \OCP\AppFramework\Http\TemplateResponse;
 use \OCP\AppFramework\Http\DataResponse;
 use \OCP\AppFramework\Controller;
 use \OCP\IServerContainer;
+use \OCP\IL10N;
 
 class CompleteController extends Controller {
-	private $userId;
 	private $l;
 	private $storage;
 	private $showLayers = 2; // TODO: Move to settings, default value
 
-	public function __construct($AppName, IRequest $request, $ServerContainer, $UserId){
+	public function __construct($AppName, IRequest $request, IL10N $l, $UserFolder){
 		parent::__construct($AppName, $request);
-		$this->userId = $UserId;
-		$this->storage = $ServerContainer->getUserFolder($UserId);
-		$this->l = \OC_L10N::get($AppName);
+		$this->storage = $UserFolder;
+		$this->l = $l;
 	}
 	/**
 	 * provide a list of directories based on the $startDir excluding all directories listed in $file(;sv)

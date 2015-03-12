@@ -1,5 +1,5 @@
 # Files Mv
-Place this app in **owncloud/apps/**
+Place this app in **owncloud/apps/** and rename it to **files_mv**
 
 ## Publish to App Store
 

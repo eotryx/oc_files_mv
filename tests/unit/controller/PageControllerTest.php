@@ -1,6 +1,6 @@
 <?php
 /**
- * ownCloud - filesmv
+ * ownCloud - keks
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -9,28 +9,25 @@
  * @copyright eotryx 2015
  */
 
-namespace OCA\Files_Mv\Controller;
+namespace OCA\Files_mv\Controller;
 
 use PHPUnit_Framework_TestCase;
 
 use OCP\AppFramework\Http\TemplateResponse;
 
 
-class CompleteControllerTest extends \Test\TestCase {
-	private static $user;
-	/**
-	 * @var \OCA\FIles_Mv\App
-	 */
-	private $files_mv;
+class MoveControllerTest extends PHPUnit_Framework_TestCase {
+	private $appName = 'files_mv';
 
-	private $originalStorage;
-
+	private $controller;
+	private $userId = 'john';
 
 	public function setUp() {
-		parent::setUp();
-
 		$request = $this->getMockBuilder('OCP\IRequest')->getMock();
 
+		$this->controller = new MoveController(
+			$this->appName, $request, $this->userId
+		);
 	}
 
 
