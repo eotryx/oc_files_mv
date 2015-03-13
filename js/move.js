@@ -1,3 +1,13 @@
+/**
+ * ownCloud - files_mv
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author eotryx <mhfiedler@gmx.de>
+ * @copyright eotryx 2015
+ */
+
 if(!OCA.Files_mv){
 	/**
 	 * Namespace for the files_mv app

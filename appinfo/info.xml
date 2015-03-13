@@ -3,9 +3,9 @@
     <id>files_mv</id>
     <name>Files Move</name>
     <description>Move functionality within the files interface</description>
-    <licence>GPL</licence>
+    <licence>AGPL</licence>
     <author>eotryx</author>
-    <version>0.7.3a</version>
+    <version>0.8.0</version>
     <namespace>Files_Mv</namespace>
     <category>productivity</category>
 	<repository>https://github.com/eotryx/oc_files_mv/</repository>

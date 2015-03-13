@@ -1,8 +1,8 @@
 <?php
 /**
- * ownCloud - filesmv
+ * ownCloud - files_mv
  *
- * This file is licensed under the General Public License version 2 or
+ * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
  * @author eotryx <mhfiedler@gmx.de>
