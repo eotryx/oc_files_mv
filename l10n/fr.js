@@ -8,6 +8,6 @@ OC.L10N.register(
     "Could not move %s" : "Impossible de déplacer %s",
     "Move" : "Déplacer",
     "Copy" : "Copier",
-    "Destination directory" : "Dossier destination"
+    "Destination directory" : "Dossier de destination"
 },
 "nplurals=2; plural=(n > 1);");
