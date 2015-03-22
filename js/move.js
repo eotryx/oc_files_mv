@@ -19,11 +19,16 @@ if(!OCA.Files_mv){
  * @namespace OCA.Files_mv.move
  */
 OCA.Files_mv.Move = {
+	/**
+	 * @var string appName used for translation file
+	 * as transifex uses the github project name, use this instead of the appName
+	 */
+	appName: 'oc_files_mv',
 	registerFileAction: function(){
 		var img = OC.imagePath('core','actions/play');
 		OCA.Files.fileActions.register(
 			'all',
-			t('files_mv','Move'),
+			t(this.appName,'Move'),
 			OC.PERMISSION_READ,
 			OC.imagePath('core','actions/play'),
 			function(file) {
@@ -37,9 +42,8 @@ OCA.Files_mv.Move = {
 		);
 		//TODO: what?
 		var el = $('#headerName .selectedActions');
-		$('<a class="move" id="move" href=""><img class="svg" src="'+img+'" alt="'+t('files_mv','Move')+'">'+t('files_mv','Move')+'</a>').appendTo(el);
+		$('<a class="move" id="move" href=""><img class="svg" src="'+img+'" alt="'+t(this.appName,'Move')+'">'+t(this.appName,'Move')+'</a>').appendTo(el);
 		el.find('.move').click(this.keks)
-
 	},
 
 	initialize: function(){
@@ -100,6 +104,7 @@ OCA.Files_mv.Move = {
 	keks: function(event){
 		// move multiple files
 		event.stopPropagation();
+		event.preventDefault();
 		if($('#mvDrop').length>0){
 			$('#mvDrop').detach();
 			return;
@@ -109,7 +114,7 @@ OCA.Files_mv.Move = {
 		for( var i=0;i<files.length;++i){
 			file += (files[i].name)+';';
 		}
-		this.createUI(false,file,false);
+		OCA.Files_mv.Move.createUI(false,file,false);
 		return false;
 	},
 
@@ -139,11 +144,11 @@ OCA.Files_mv.Move = {
 		html += '<form action="#" id="mvForm"><input type="checkbox" id="dirCopy"';
 		if(!permUpdate || copy) html += ' checked';
 		if(!permUpdate) html += ' disabled';
-		html += '></input><label for="dirCopy">'+t('files_mv','Copy')+'</label><br>';
+		html += '></input><label for="dirCopy">'+t(this.appName,'Copy')+'</label><br>';
 
-		html += '<input id="dirList" placeholder="'+t('files_mv','Destination directory')+'"><br>';
+		html += '<input id="dirList" placeholder="'+t(this.appName,'Destination directory')+'"><br>';
 		html += '<input type="hidden" id="dirFile" value="'+file+'" />';
-		html += '<input type="submit" id="dirListSend" value="'+t('files_mv','Move')+'" />';
+		html += '<input type="submit" id="dirListSend" value="'+t(this.appName,'Move')+'" />';
 		html += '<strong id="mvWarning"></strong></form>';
 		html += '</div>';
 		if(local){

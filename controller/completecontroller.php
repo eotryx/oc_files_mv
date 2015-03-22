@@ -11,19 +11,23 @@
 
 namespace OCA\Files_Mv\Controller;
 
-use \OCP\IRequest;
-use \OCP\AppFramework\Http\TemplateResponse;
-use \OCP\AppFramework\Http\DataResponse;
-use \OCP\AppFramework\Controller;
-use \OCP\IServerContainer;
-use \OCP\IL10N;
+use OCP\IRequest;
+use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Controller;
+use OCP\IServerContainer;
+use OCP\IL10N;
 
 class CompleteController extends Controller {
+	/** @var \OC\IL10N */
 	private $l;
 	private $storage;
 	private $showLayers = 2; // TODO: Move to settings, default value
 
-	public function __construct($AppName, IRequest $request, IL10N $l, $UserFolder){
+	public function __construct($AppName,
+								IRequest $request,
+								IL10N $l,
+								$UserFolder){
 		parent::__construct($AppName, $request);
 		$this->storage = $UserFolder;
 		$this->l = $l;
