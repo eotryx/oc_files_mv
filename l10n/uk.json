@@ -1,5 +1,5 @@
 { "translations": {
-    "No filesystem found" : "Файлову систему не знайдено",
+    "No filesystem found" : "Не знайдено жодної файлової системи",
     "No data supplied." : "Дані не вказано.",
     "Src and Dest are not allowed to be the same location!" : "Джерело та призначення не можуть бути одним й тим же розміщенням!",
     "Could not move %s - File with this name already exists" : "Не вдалося перемістити %s - Файл з таким ім'ям вже існує",
