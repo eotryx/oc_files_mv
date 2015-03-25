@@ -171,7 +171,12 @@ OCA.Files_mv.Move = {
 					},
 					function(dir){
 						$('#dirList').autocomplete('option','autoFocus', true);
-						response(dir);
+						if(dir['status'] && dir['status']=='error'){
+							response(dir['message']);
+						}
+						else{
+							response(dir);
+						}
 					},
 					'json'
 				);

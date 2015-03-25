@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+0.8.1
+-----
+ 
+ * fix Translation
+ * Autocompletion with incomplete directory name
+ * Fix move multiple files reload page reload bug
+
 0.8.0
 -----
 

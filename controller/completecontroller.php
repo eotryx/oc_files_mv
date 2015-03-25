@@ -44,6 +44,7 @@ class CompleteController extends Controller {
 		$curDir = $StartDir;
 		$files = $this->fixInputFiles($file);
 		$dirs = array();
+		$filePrefix = "";
 		
 		// fix curDir, so it always start with leading / 
 		if(empty($curDir)) $curDir = '/';
@@ -51,6 +52,13 @@ class CompleteController extends Controller {
 			if(strlen($curDir)>1 && substr($curDir,0,1)!=='/'){
 				$curDir = '/'.$curDir;
 			}
+		}
+		if(!$this->storage->nodeExists($curDir)){
+			// user is writing a longer directory name, so assume the base directory instead and set directory starting letters
+			$pathinfo = pathinfo($curDir);
+			$curDir = $pathinfo['dirname'];
+			if($curDir == ".") $curDir = "";
+			$filePrefix = $pathinfo['basename'];
 		}
 		if(!($this->storage->nodeExists($curDir)
 			&& $this->storage->get($curDir)->getType()===\OCP\Files\FileInfo::TYPE_FOLDER
@@ -63,7 +71,11 @@ class CompleteController extends Controller {
 		}
 		$patternFile = '!('. implode(')|(',$files) .')!';
 		if($curDir!="/" && !preg_match($patternFile,$curDir)) $dirs[] = $curDir;
-		$tmp = $this->getDirList($curDir,$files,$this->showLayers);
+		$tmp = $this->getDirList(
+								$curDir,
+								$files,
+								$filePrefix,
+								$this->showLayers);
 		$dirs = array_merge($dirs,$tmp);
 		
 		return $dirs;
@@ -93,19 +105,21 @@ class CompleteController extends Controller {
 	 *
 	 * @param string $dir - current directory
 	 * @param string $actFile - file to be ignored
+	 * @param string filePrefix - prefix with which the folder name should start
 	 * @param int $depth - which depth, -1=all (sub-)levels, 0=finish
 	 */
-	private function getDirList($dir,$actFile,$depth=-1){
+	private function getDirList($dir, $actFile, $filePrefix, $depth=-1){
 		if($depth == 0) return array(); // Abbruch wenn depth = 0
 		$ret = array();
 		$patternFile = '!(('.implode(')|(',$actFile).'))$!';
 		$folder = $this->storage->get($dir)->getDirectoryListing();
 		$actFileDir = dirname($actFile[0]); // ignore exactly this path
+		if(substr($dir,-1)=='/') $dir = substr($dir,0,-1); //remove ending '/'
 		foreach($folder as $i ){
 			// ignore files other than directories
 			if($i->getType()!==\OCP\Files\FileInfo::TYPE_FOLDER) continue;
+			if(!empty($filePrefix) && !(stripos($i->getName(), $filePrefix)===0)) continue; // continue when file-prefix is given and the prefix doesn't match
 
-			if(substr($dir,-1)=='/') $dir = substr($dir,0,-1); //remove ending '/'
 			$path = $dir.'/'.$i->getName();
 			
 			// ignore directories that are within the files to be moved
