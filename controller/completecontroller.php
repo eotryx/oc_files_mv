@@ -130,7 +130,7 @@ class CompleteController extends Controller {
 				$ret[] =  $path;
 			}
 			//recursion for all sub directories
-			$ret = array_merge($ret,$this->getDirList($path,$actFile,$depth-1));
+			$ret = array_merge($ret,$this->getDirList($path,$actFile,$filePrefix, $depth-1));
 		}
 		return $ret;
 	}
