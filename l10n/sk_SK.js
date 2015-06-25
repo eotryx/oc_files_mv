@@ -2,6 +2,7 @@ OC.L10N.register(
     "oc_files_mv",
     {
     "No filesystem found" : "Súborový systém nenájdený",
+    "No data supplied." : "Dáte neboli dodané.",
     "Could not move %s - File with this name already exists" : "Nie je možné presunúť %s - súbor s týmto menom už existuje",
     "Could not move %s" : "Nie je možné presunúť %s",
     "Move" : "Presunúť",
