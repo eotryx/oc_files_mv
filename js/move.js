@@ -158,7 +158,7 @@ OCA.Files_mv.Move = {
 			$(html).addClass('mv').appendTo('#headerName .selectedActions');
 		}
 		$('#dirList').focus(function(){
-			$('#dirList').autocomplete("search","")
+			$('#dirList').autocomplete("search","/")
 		});
 		// get autocompletion names
 		$('#dirList').autocomplete({minLength:0, 
