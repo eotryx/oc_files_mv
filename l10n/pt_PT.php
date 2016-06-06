@@ -7,6 +7,6 @@ $TRANSLATIONS = array(
 "Could not move %s" => "Não foi possível mover %s",
 "Move" => "Mover",
 "Copy" => "Copiar",
-"Destination directory" => "Directório de destino"
+"Destination directory" => "Diretoria de destino"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";
