@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "No filesystem found" : "Súborový systém nenájdený",
     "No data supplied." : "Dáte neboli dodané.",
+    "Src and Dest are not allowed to be the same location!" : "Zdroj a cieľ nemôžu byť rovnaké miesto!",
     "Could not move %s - File with this name already exists" : "Nie je možné presunúť %s - súbor s týmto menom už existuje",
     "Could not move %s" : "Nie je možné presunúť %s",
     "Move" : "Presunúť",
